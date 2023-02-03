@@ -2,16 +2,29 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
 use Doctrine\DBAL\Types\Types;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\VoucherRepository;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+#[ApiFilter(BooleanFilter::class, properties: ['isExpired'])]
 #[ApiResource(
     normalizationContext: ['groups' => ['voucher:read']],
     denormalizationContext: ['groups' => ['voucher:write']],
 )]
+#[Post(security : 'is_granted("ROLE_ADMIN")', securityMessage: 'Only admins can create vouchers')]
+#[Put(security : 'is_granted("ROLE_ADMIN")')]
+#[Delete(security : 'is_granted("ROLE_ADMIN")')]
+#[Patch(security : 'is_granted("ROLE_ADMIN")')]
+#[GetCollection()]
 #[ORM\Entity(repositoryClass: VoucherRepository::class)]
 class Voucher
 {

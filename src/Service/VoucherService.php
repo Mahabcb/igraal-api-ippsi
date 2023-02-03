@@ -13,16 +13,17 @@ class VoucherService
          * si un voucher s'expire => on lance une erreur
          * si le montant d'un voucher est supérieur au montant de la commande => on lance une erreur
          */
-
         if($voucher->getExpiredAt() < new \DateTime()) {
             $voucher->setIsExpired(true);
-            throw new \Exception('Voucher expired');
+            throw new \Exception('Voucher expired or used');
         }
 
         if($voucher->getAmount() > $order->getAmount()) {
             throw new \Exception('Voucher is not valid for this order');
         }
-
+        if($voucher->isIsExpired()) {
+            throw new \Exception('Voucher expired or used');
+        }
         $order->setAmount($order->getAmount() - $voucher->getAmount());
         $voucher->setIsExpired(true);
         $order->setVoucher($voucher);
