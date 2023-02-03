@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Post;
 use Doctrine\DBAL\Types\Types;
@@ -11,8 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\VoucherRepository;
-use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiFilter(BooleanFilter::class, properties: ['isExpired'])]
@@ -25,6 +26,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[Delete(security : 'is_granted("ROLE_ADMIN")')]
 #[Patch(security : 'is_granted("ROLE_ADMIN")')]
 #[GetCollection()]
+#[Get]
 #[ORM\Entity(repositoryClass: VoucherRepository::class)]
 class Voucher
 {
