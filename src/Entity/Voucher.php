@@ -2,35 +2,55 @@
 
 namespace App\Entity;
 
-use App\Repository\VoucherRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use App\Repository\VoucherRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
+#[ApiResource(
+    normalizationContext: ['groups' => ['voucher:read']],
+    denormalizationContext: ['groups' => ['voucher:write']],
+)]
 #[ORM\Entity(repositoryClass: VoucherRepository::class)]
 class Voucher
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['voucher:read'])]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['voucher:read', 'voucher:write'])]
     private ?int $amount = null;
 
+    #[Groups(['voucher:read', 'voucher:write'])]
     #[ORM\Column(length: 255)]
     private ?string $code = null;
 
+    #[Groups(['voucher:read'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
+    #[Groups(['voucher:read'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $expiredAt = null;
 
+    #[Groups(['voucher:read'])]
     #[ORM\Column]
     private ?bool $isExpired = null;
 
+    #[Groups(['voucher:read'])]
     #[ORM\OneToOne(mappedBy: 'voucher', cascade: ['persist', 'remove'])]
     private ?Order $command = null;
+
+    public function __construct()
+    {
+        $this->isExpired = false;
+        $this->createdAt = new \DateTime();
+        $this->expiredAt = new \DateTime('+1 week');
+    }
 
     public function getId(): ?int
     {

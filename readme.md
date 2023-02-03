@@ -9,3 +9,10 @@ requirements :
 ## Créer nos entités user, voucher, order
 Requirements piur user :
 - security
+
+### Exposer notre api
+Requirements : 
+composer require api
+
+### Créer des fixtures
+composer require orm-fixtures
