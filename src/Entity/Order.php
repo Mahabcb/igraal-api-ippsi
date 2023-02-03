@@ -2,15 +2,30 @@
 
 namespace App\Entity;
 
+use App\State\ApplyVoucher;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Post;
 use Doctrine\DBAL\Types\Types;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\OrderRepository;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     normalizationContext: ['groups' => ['order:read']],
     denormalizationContext: ['groups' => ['order:write']],
+    operations : [
+        new Get,
+        new GetCollection,
+        new Put(processor: ApplyVoucher::class),
+        new Post(processor: ApplyVoucher::class),
+        new Patch(processor: ApplyVoucher::class),
+        new Delete,
+    ],
 )]
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
